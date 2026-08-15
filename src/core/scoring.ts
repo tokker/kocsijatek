@@ -16,12 +16,19 @@ export function normalize(earned: number, max: number): number {
 
 /**
  * Tippversenyekhez: 100 pont a pontos találatért, onnan lineárisan nullára,
- * amikor a tévedés eléri a valós érték nagyságát.
+ * amikor a tévedés eléri a tűréshatárt.
+ *
+ * A tűréshatár megadása évszámoknál elengedhetetlen. Alapértelmezésben a
+ * válasz nagysága a viszonyítás, ami magnitúdó-kérdéseknél helyes ("hány
+ * méter magas"), évszámoknál viszont csődöt mond: 1989 helyett 1950-et
+ * tippelve a 39 év tévedés az 1989-hez képest 2%, tehát 98 pont járna
+ * egy vadul rossz tippért.
  */
-export function proximityPoints(guess: number, actual: number): number {
+export function proximityPoints(guess: number, actual: number, tolerance?: number): number {
   const error = Math.abs(guess - actual)
-  if (actual === 0) return error === 0 ? 100 : 0
-  const ratio = 1 - error / Math.abs(actual)
+  const span = tolerance ?? Math.abs(actual)
+  if (span === 0) return error === 0 ? 100 : 0
+  const ratio = 1 - error / span
   return Math.round(Math.max(0, ratio) * 100)
 }
 

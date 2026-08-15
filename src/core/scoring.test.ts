@@ -57,6 +57,24 @@ describe('proximityPoints', () => {
     expect(proximityPoints(0, 0)).toBe(100)
     expect(proximityPoints(5, 0)).toBe(0)
   })
+
+  it('scores against an explicit tolerance when one is given', () => {
+    expect(proximityPoints(1989, 1989, 25)).toBe(100)
+    expect(proximityPoints(1964, 1989, 25)).toBe(0)
+    expect(proximityPoints(1976, 1989, 25)).toBe(48)
+  })
+
+  it('makes a wild year guess worthless, which the default cannot', () => {
+    // Tűréshatár nélkül egy 39 éves tévedés 98 pontot érne, mert az
+    // 1989-hez képest csak 2% — ezért kötelező évszámnál a tűréshatár.
+    expect(proximityPoints(1950, 1989)).toBeGreaterThan(90)
+    expect(proximityPoints(1950, 1989, 25)).toBe(0)
+  })
+
+  it('treats a zero tolerance as demanding an exact answer', () => {
+    expect(proximityPoints(10, 10, 0)).toBe(100)
+    expect(proximityPoints(11, 10, 0)).toBe(0)
+  })
 })
 
 describe('roundWinners', () => {

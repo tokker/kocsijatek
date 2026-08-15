@@ -1,13 +1,21 @@
+import closestGame from './closest'
 import emojiGame from './emoji'
 import flagsGame from './flags'
 import triviaGame from './trivia'
+import wagerGame from './wager'
 import type { GameModule } from './types'
 
 /**
  * A játékok nyilvántartása. Új játék hozzáadása EGY sor itt, plusz egy
  * fájl — a motor, a szinkron és a képernyők változatlanok maradnak.
  */
-const modules = [triviaGame, emojiGame, flagsGame] as unknown as GameModule[]
+const modules = [
+  triviaGame,
+  emojiGame,
+  flagsGame,
+  closestGame,
+  wagerGame,
+] as unknown as GameModule[]
 
 export const GAMES: Record<string, GameModule> = Object.fromEntries(
   modules.map((module) => [module.id, module]),
