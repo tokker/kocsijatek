@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { RoundCompare } from './RoundCompare'
 import { createRng } from '../core/rng'
-import { roundWinners } from '../core/scoring'
-import type { GameResult, RoomState } from '../core/types'
+import type { GameResult } from '../core/types'
 import { getGame } from '../games/registry'
 import type { SyncAdapter } from '../sync'
 import { useRoom } from '../sync/useRoom'
@@ -51,7 +51,7 @@ export function RoomScreen({ adapter, session, onLeave }: Props) {
       <Header room={room} session={session} onLeave={onLeave} />
 
       {room.currentRound > 1 && (
-        <PreviousRound state={room.state} round={room.currentRound - 1} myTeamId={session.teamId} />
+        <RoundCompare state={room.state} round={room.currentRound - 1} myTeamId={session.teamId} />
       )}
 
       {room.myStatus === 'done' ? (
@@ -162,58 +162,6 @@ function WaitingPanel({ names }: { names: string[] }) {
   )
 }
 
-function PreviousRound({
-  state,
-  round,
-  myTeamId,
-}: {
-  state: RoomState
-  round: number
-  myTeamId: string
-}) {
-  const done = state.rounds?.[round]?.done ?? {}
-  const winners = new Set(roundWinners(done))
-  const entries = Object.entries(done).sort(([, a], [, b]) => b.points - a.points)
-  if (entries.length === 0) return null
-
-  return (
-    <section className="flex flex-col gap-3 rounded-3xl bg-slate-800 p-5">
-      <h2 className="text-sm text-slate-400">Round {round} results</h2>
-      {entries.map(([teamId, result]) => {
-        const team = state.teams[teamId]
-        return (
-          <div key={teamId} className="flex flex-col gap-1">
-            <div className="flex items-baseline justify-between">
-              <span className={teamId === myTeamId ? 'font-bold' : ''}>
-                {team?.emoji} {team?.name ?? teamId}
-                {winners.has(teamId) && ' 👑'}
-              </span>
-              <span className="tabular-nums">
-                {result.rawScore} · {result.points} pts
-              </span>
-            </div>
-            <ItemGrid items={result.items} />
-          </div>
-        )
-      })}
-    </section>
-  )
-}
-
-/** Feladatonkénti zöld/piros rács — ebből látszik, hol dőlt el a kör. */
-function ItemGrid({ items }: { items: boolean[] }) {
-  if (items.length === 0) return null
-  return (
-    <div className="flex flex-wrap gap-1">
-      {items.map((correct, index) => (
-        <span
-          key={index}
-          className={`size-3 rounded-sm ${correct ? 'bg-green-500' : 'bg-red-500/60'}`}
-        />
-      ))}
-    </div>
-  )
-}
 
 function Standings({ room, myTeamId }: { room: Room; myTeamId: string }) {
   if (!room.state) return null
