@@ -1,0 +1,320 @@
+import type { Difficulty } from '../difficulty'
+
+export interface EmojiPuzzle {
+  id: string
+  emoji: string
+  /** A helyes megfejtés mindig a choices[correctIndex]. */
+  choices: { en: string[]; hu?: string[] }
+  correctIndex: number
+  difficulty: Difficulty
+  kind: 'film' | 'book' | 'series' | 'phrase'
+}
+
+/**
+ * A nehézséget itt nem az emoji rejtvény adja, hanem a HAMIS válaszok.
+ * Négy találomra választott cím mellett a megfejtés triviális; négy
+ * hasonló hangulatú, ugyanabból a műfajból való cím mellett viszont
+ * tényleg meg kell fejteni a képsort.
+ */
+export const EMOJI_PUZZLES: EmojiPuzzle[] = [
+  {
+    id: 'clockwork',
+    emoji: '🕰️🍊',
+    choices: { en: ['A Clockwork Orange', 'Time Bandits', 'The Orange Box', 'Tangerine'] },
+    correctIndex: 0,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'wolf-wall-street',
+    emoji: '🐺📈🥂',
+    choices: { en: ['Margin Call', 'The Big Short', 'The Wolf of Wall Street', 'Wall Street'] },
+    correctIndex: 2,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'mockingbird',
+    emoji: '⚖️🔫🐦',
+    choices: { en: ['The Birds', 'To Kill a Mockingbird', 'Bird Box', 'A Time to Kill'] },
+    correctIndex: 1,
+    difficulty: 'medium',
+    kind: 'book',
+  },
+  {
+    id: 'lord-of-flies',
+    emoji: '🏝️🐷🐚',
+    choices: { en: ['Lord of the Flies', 'Robinson Crusoe', 'Cast Away', 'Treasure Island'] },
+    correctIndex: 0,
+    difficulty: 'medium',
+    kind: 'book',
+  },
+  {
+    id: 'silence-lambs',
+    emoji: '🐑🤐🍷',
+    choices: { en: ['Se7en', 'The Silence of the Lambs', 'Zodiac', 'Psycho'] },
+    correctIndex: 1,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'matrix',
+    emoji: '🕶️💊🐇',
+    choices: { en: ['Inception', 'Existenz', 'The Matrix', 'Dark City'] },
+    correctIndex: 2,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'martian',
+    emoji: '🚀🥔🔴',
+    choices: { en: ['Interstellar', 'Gravity', 'Ad Astra', 'The Martian'] },
+    correctIndex: 3,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'breaking-bad',
+    emoji: '🧪🎩🚐',
+    choices: { en: ['Ozark', 'Breaking Bad', 'Better Call Saul', 'Narcos'] },
+    correctIndex: 1,
+    difficulty: 'medium',
+    kind: 'series',
+  },
+  {
+    id: 'moby-dick',
+    emoji: '🐋⚓🗡️',
+    choices: { en: ['The Old Man and the Sea', 'Moby-Dick', 'Twenty Thousand Leagues', 'Jaws'] },
+    correctIndex: 1,
+    difficulty: 'medium',
+    kind: 'book',
+  },
+  {
+    id: 'wizard-oz',
+    emoji: '🌪️👠🌈',
+    choices: { en: ['The Wizard of Oz', 'Alice in Wonderland', 'Peter Pan', 'The NeverEnding Story'] },
+    correctIndex: 0,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'hunger-games',
+    emoji: '🏹🔥🎯',
+    choices: { en: ['Divergent', 'The Maze Runner', 'The Hunger Games', 'Battle Royale'] },
+    correctIndex: 2,
+    difficulty: 'medium',
+    kind: 'film',
+  },
+  {
+    id: 'jungle-book',
+    emoji: '📗🐍🐻',
+    choices: { en: ['Tarzan', 'The Jungle Book', 'Life of Pi', 'The Lion King'] },
+    correctIndex: 1,
+    difficulty: 'medium',
+    kind: 'book',
+  },
+
+  {
+    id: 'crime-punishment',
+    emoji: '🪓👵💭',
+    choices: {
+      en: ['Crime and Punishment', 'The Brothers Karamazov', 'The Trial', 'Notes from Underground'],
+    },
+    correctIndex: 0,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'metamorphosis',
+    emoji: '🛏️🪲😱',
+    choices: { en: ['The Trial', 'The Castle', 'The Metamorphosis', 'Amerika'] },
+    correctIndex: 2,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'one-flew-cuckoo',
+    emoji: '🕊️🪺🏥',
+    choices: {
+      en: ["One Flew Over the Cuckoo's Nest", 'Shutter Island', 'Girl, Interrupted', 'A Beautiful Mind'],
+    },
+    correctIndex: 0,
+    difficulty: 'hard',
+    kind: 'film',
+  },
+  {
+    id: 'catch-22',
+    emoji: '✈️2️⃣2️⃣🎣',
+    choices: { en: ['Slaughterhouse-Five', 'Catch-22', 'The Naked and the Dead', 'M*A*S*H'] },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'no-country',
+    emoji: '🤠🪙🎲',
+    choices: { en: ['True Grit', 'There Will Be Blood', 'Hell or High Water', 'No Country for Old Men'] },
+    correctIndex: 3,
+    difficulty: 'hard',
+    kind: 'film',
+  },
+  {
+    id: 'grapes-wrath',
+    emoji: '🍇😡🚜',
+    choices: { en: ['Of Mice and Men', 'The Grapes of Wrath', 'East of Eden', 'Cannery Row'] },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'brave-new-world',
+    emoji: '💊🧬😀',
+    choices: { en: ['Brave New World', 'Nineteen Eighty-Four', 'Fahrenheit 451', 'The Giver'] },
+    correctIndex: 0,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'apocalypse-now',
+    emoji: '🚁🌴🎼',
+    choices: { en: ['Platoon', 'Apocalypse Now', 'Full Metal Jacket', 'The Deer Hunter'] },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'film',
+  },
+  {
+    id: 'shining',
+    emoji: '🏨🪓❄️',
+    choices: { en: ['Misery', 'The Shining', 'Doctor Sleep', 'The Lighthouse'] },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'film',
+  },
+  {
+    id: 'count-monte-cristo',
+    emoji: '🏝️💰⚔️',
+    choices: {
+      en: ['The Three Musketeers', 'Treasure Island', 'The Count of Monte Cristo', 'Papillon'],
+    },
+    correctIndex: 2,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'dr-strangelove',
+    emoji: '☢️🤠🎡',
+    choices: { en: ['Fail Safe', 'Dr. Strangelove', 'The Day After', 'WarGames'] },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'film',
+  },
+  {
+    id: 'hundred-years',
+    emoji: '💯🗓️🏚️',
+    choices: {
+      en: ['Love in the Time of Cholera', 'One Hundred Years of Solitude', 'The House of the Spirits', 'Pedro Páramo'],
+    },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'book',
+  },
+  {
+    id: 'sopranos',
+    emoji: '🦆🔫🛋️',
+    choices: { en: ['Goodfellas', 'The Sopranos', 'Boardwalk Empire', 'The Wire'] },
+    correctIndex: 1,
+    difficulty: 'hard',
+    kind: 'series',
+  },
+  {
+    id: 'twelve-angry',
+    emoji: '1️⃣2️⃣😠👨',
+    choices: { en: ['Twelve Angry Men', 'The Verdict', 'A Few Good Men', 'Witness for the Prosecution'] },
+    correctIndex: 0,
+    difficulty: 'hard',
+    kind: 'film',
+  },
+
+  {
+    id: 'waiting-godot',
+    emoji: '🌳⏳👞',
+    choices: {
+      en: ['Rosencrantz and Guildenstern Are Dead', 'Waiting for Godot', 'The Bald Soprano', 'Endgame'],
+    },
+    correctIndex: 1,
+    difficulty: 'brutal',
+    kind: 'book',
+  },
+  {
+    id: 'name-of-rose',
+    emoji: '🌹⛪📚☠️',
+    choices: { en: ['The Pillars of the Earth', "Foucault's Pendulum", 'The Name of the Rose', 'The Da Vinci Code'] },
+    correctIndex: 2,
+    difficulty: 'brutal',
+    kind: 'book',
+  },
+  {
+    id: 'seventh-seal',
+    emoji: '♟️💀🏖️',
+    choices: { en: ['Wild Strawberries', 'The Seventh Seal', 'Persona', 'The Virgin Spring'] },
+    correctIndex: 1,
+    difficulty: 'brutal',
+    kind: 'film',
+  },
+  {
+    id: 'gravitys-rainbow',
+    emoji: '🚀🌈🎯',
+    choices: { en: ['Gravity’s Rainbow', 'Infinite Jest', 'V.', 'White Noise'] },
+    correctIndex: 0,
+    difficulty: 'brutal',
+    kind: 'book',
+  },
+  {
+    id: 'stalker',
+    emoji: '🚞🌿🚧',
+    choices: { en: ['Solaris', 'Stalker', 'Andrei Rublev', 'The Mirror'] },
+    correctIndex: 1,
+    difficulty: 'brutal',
+    kind: 'film',
+  },
+  {
+    id: 'blindness',
+    emoji: '👁️⬜🏥',
+    choices: { en: ['Blindness', 'The Plague', 'The Road', 'Never Let Me Go'] },
+    correctIndex: 0,
+    difficulty: 'brutal',
+    kind: 'book',
+  },
+  {
+    id: 'perfume',
+    emoji: '👃🌸🇫🇷',
+    choices: { en: ['Chocolat', 'Perfume', 'The Piano Teacher', 'Delicatessen'] },
+    correctIndex: 1,
+    difficulty: 'brutal',
+    kind: 'book',
+  },
+  {
+    id: 'rashomon',
+    emoji: '🌧️⛩️🗣️',
+    choices: { en: ['Yojimbo', 'Ran', 'Rashomon', 'Throne of Blood'] },
+    correctIndex: 2,
+    difficulty: 'brutal',
+    kind: 'film',
+  },
+  {
+    id: 'master-margarita-emoji',
+    emoji: '🐈‍⬛😈🇷🇺',
+    choices: { en: ['Doctor Zhivago', 'The Master and Margarita', 'Dead Souls', 'The Idiot'] },
+    correctIndex: 1,
+    difficulty: 'brutal',
+    kind: 'book',
+  },
+  {
+    id: 'city-of-god',
+    emoji: '🔫🏘️📷',
+    choices: { en: ['Elite Squad', 'Amores Perros', 'City of God', 'Central Station'] },
+    correctIndex: 2,
+    difficulty: 'brutal',
+    kind: 'film',
+  },
+]

@@ -1,30 +1,32 @@
-import { TRIVIA_QUESTIONS, type TriviaQuestion } from './questions.en'
+import { FlagSvg } from './FlagSvg'
+import { FLAG_QUESTIONS, type FlagQuestion } from './flags.en'
 import { buildEscalatingRound, mixSize, type RoundMix } from '../difficulty'
 import { QuizRunner } from '../../ui/QuizRunner'
 import type { GameModule } from '../types'
 
 const ROUND_MIX: RoundMix = [
-  ['medium', 10],
-  ['hard', 12],
+  ['medium', 8],
+  ['hard', 9],
   ['brutal', 8],
 ]
 
-/** Az utolsó öt kérdés duplán számít — így a kör a hajrában dőlhet el. */
 const DOUBLE_FROM = mixSize(ROUND_MIX) - 5
 
-const triviaGame: GameModule<TriviaQuestion> = {
-  id: 'trivia',
-  titleKey: 'games.trivia.title',
-  descriptionKey: 'games.trivia.description',
-  icon: '🧠',
+const flagsGame: GameModule<FlagQuestion> = {
+  id: 'flags',
+  titleKey: 'games.flags.title',
+  descriptionKey: 'games.flags.description',
+  icon: '🚩',
 
-  buildItems: (rng) => buildEscalatingRound(TRIVIA_QUESTIONS, rng, ROUND_MIX),
+  buildItems: (rng) => buildEscalatingRound(FLAG_QUESTIONS, rng, ROUND_MIX),
 
   Component: ({ items, durationSec, onComplete }) => (
-    <QuizRunner<TriviaQuestion>
+    <QuizRunner<FlagQuestion>
       items={items}
       durationSec={durationSec}
-      renderPrompt={(question) => question.prompt.en}
+      renderPrompt={(question) => (
+        <FlagSvg spec={question.spec} className="mx-auto h-40 w-auto rounded-lg shadow-lg" />
+      )}
       getChoices={(question) => question.choices.en}
       isCorrect={(question, choiceIndex) => choiceIndex === question.correctIndex}
       weightOf={(_question, index) => (index >= DOUBLE_FROM ? 2 : 1)}
@@ -33,5 +35,5 @@ const triviaGame: GameModule<TriviaQuestion> = {
   ),
 }
 
-export default triviaGame
+export default flagsGame
 export { ROUND_MIX }

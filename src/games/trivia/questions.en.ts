@@ -6,14 +6,7 @@ export type TriviaCategory =
   | 'sport'
   | 'nature'
 
-/**
- * A közönség művelt huszonévesekből áll, ezért nincs "easy" szint.
- *
- * A cél, hogy egy jó csapat is 60-70% körül teljesítsen: ha mindkét autó
- * közel maximumot ér el, a pontszámok nem szóródnak, és a kör
- * gyakorlatilag döntetlen lesz. A szóródás maga a játékmenet.
- */
-export type TriviaDifficulty = 'medium' | 'hard' | 'brutal'
+import type { Difficulty } from '../difficulty'
 
 export interface TriviaQuestion {
   id: string
@@ -22,7 +15,7 @@ export interface TriviaQuestion {
   choices: { en: string[]; hu?: string[] }
   correctIndex: number
   category: TriviaCategory
-  difficulty: TriviaDifficulty
+  difficulty: Difficulty
 }
 
 export const TRIVIA_QUESTIONS: TriviaQuestion[] = [
