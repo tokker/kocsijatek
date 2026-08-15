@@ -34,5 +34,8 @@ Dominican Republic, Equatorial Guinea, Guinea-Bissau, Marshall Islands,
 Papua New Guinea, Sao Tome and Principe, Timor-Leste, Trinidad and Tobago,
 Saint Kitts and Nevis, Saint Vincent and the Grenadines, Holland, Britain,
 Great Britain, England, Scotland, Wales, Burma, Swaziland, Macedonia,
-East Timor, Cote d Ivoire, Emirates, America
+East Timor, Cote d Ivoire, Emirates, America,
+Turkiye, Ivory Coast, Cote dIvoire, Czech Republic, Holland, Burma,
+East Timor, Swaziland, Macedonia, Vatican City, Great Britain, Britain,
+United Kingdom, USA, UAE, DR Congo, South Korea, North Korea, Cabo Verde
 `

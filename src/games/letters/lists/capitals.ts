@@ -13,5 +13,16 @@ Pretoria, Pyongyang, Quito, Rabat, Reykjavik, Riga, Riyadh, Rome, San Jose,
 San Marino, Santiago, Sarajevo, Seoul, Singapore, Skopje, Sofia, Stockholm,
 Tallinn, Tashkent, Tbilisi, Tehran, Tokyo, Tripoli, Tunis, Ulaanbaatar,
 Vaduz, Valletta, Vienna, Vilnius, Warsaw, Washington, Wellington, Yerevan,
-Zagreb
+Zagreb,
+Andorra la Vella, Apia, Ashgabat, Asmara, Astana, Banjul, Basseterre,
+Belmopan, Bishkek, Bissau, Brazzaville, Bridgetown, Bujumbura, Castries,
+Conakry, Djibouti, Dodoma, Freetown, Funafuti, Gaborone, Georgetown,
+Guatemala City, Honiara, Jerusalem, Juba, Kinshasa, Kyiv, Libreville,
+Lilongwe, Lome, Majuro, Malabo, Male, Manama, Maseru, Mbabane, Mexico City,
+Mogadishu, Moroni, Muscat, Naypyidaw, Ndjamena, Niamey, Nouakchott,
+Nukualofa, Ouagadougou, Palikir, Paramaribo, Podgorica, Port au Prince,
+Port Louis, Port Moresby, Port of Spain, Port Vila, Porto Novo, Praia,
+Pristina, Roseau, Saint Georges, Saint Johns, San Salvador, Sanaa,
+Santo Domingo, Sao Tome, Sucre, Suva, Taipei, Tarawa, Tegucigalpa, Thimphu,
+Tirana, Vatican City, Victoria, Vientiane, Windhoek, Yamoussoukro, Yaounde
 `

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { buildChallenges, categoryById, type Challenge } from './categories'
-import { normalizeWord } from '../text'
+import { matchesWord, normalizeWord } from '../text'
 import { normalize } from '../../core/scoring'
 import type { Rng } from '../../core/rng'
 import { useCountdown } from '../../ui/useCountdown'
@@ -48,7 +48,7 @@ function ChallengePanel({
     if (!word) return
 
     const category = categoryById(challenge.categoryId)
-    if (!word.startsWith(challenge.letter) || !category?.words.has(word)) {
+    if (!word.startsWith(challenge.letter) || !category || !matchesWord(category.words, word)) {
       setFlash('miss')
     } else if (accepted.includes(word)) {
       setFlash('dup')
