@@ -49,4 +49,24 @@ export const GRID_THEMES: GridTheme[] = [
     name: { en: 'Architecture' },
     words: ['ARCH', 'VAULT', 'COLUMN', 'FACADE', 'ATRIUM', 'GABLE', 'SPIRE', 'BUTTRESS', 'CORNICE', 'ROTUNDA', 'PORTICO', 'MEZZANINE'],
   },
+  {
+    id: 'seafaring',
+    name: { en: 'At sea' },
+    words: ['ANCHOR', 'HARBOUR', 'GALLEON', 'COMPASS', 'STARBOARD', 'MARINER', 'LAGOON', 'TIDAL', 'SCHOONER', 'BEACON', 'RUDDER', 'FLOTILLA'],
+  },
+  {
+    id: 'mythology',
+    name: { en: 'Mythology' },
+    words: ['ORACLE', 'TITAN', 'SIREN', 'CHIMERA', 'PHOENIX', 'CENTAUR', 'VALKYRIE', 'MINOTAUR', 'HYDRA', 'OLYMPUS', 'PEGASUS', 'GORGON'],
+  },
+  {
+    id: 'cinema',
+    name: { en: 'Cinema' },
+    words: ['MONTAGE', 'SCRIPT', 'CAMEO', 'DIRECTOR', 'TRAILER', 'SEQUEL', 'STUDIO', 'CLOSEUP', 'PREMIERE', 'SUBTITLE', 'MATINEE', 'DOLLY'],
+  },
+  {
+    id: 'minerals',
+    name: { en: 'Rocks and minerals' },
+    words: ['QUARTZ', 'GRANITE', 'BASALT', 'OBSIDIAN', 'MARBLE', 'GYPSUM', 'PYRITE', 'SLATE', 'AMBER', 'GARNET', 'FELDSPAR', 'MALACHITE'],
+  },
 ]

@@ -6,6 +6,13 @@ export interface NumberFact {
   answer: number
   /** Mekkora tévedésnél csökken nullára a pont. Évszámoknál kötelező. */
   tolerance: number
+  /**
+   * Évszámot kérdez-e. Kifejezetten jelölni kell, mert az értékből nem
+   * lehet megbízhatóan kitalálni: az Eiffel-torony 1665 lépcsőfoka is
+   * évszámnak látszana. Az évszámoknál a tűréshatár szűk kell legyen,
+   * különben egy vad tipp is majdnem teljes pontot érne.
+   */
+  isYear?: boolean
   /** Mértékegység a beviteli mező mellett, pl. "m", "km", "év". */
   unit?: string
   difficulty: Difficulty
@@ -63,6 +70,7 @@ export const NUMBER_FACTS: NumberFact[] = [
     prompt: { en: 'In which year was the first iPhone released?' },
     answer: 2007,
     tolerance: 5,
+    isYear: true,
     difficulty: 'medium',
   },
   {
@@ -85,6 +93,51 @@ export const NUMBER_FACTS: NumberFact[] = [
     prompt: { en: 'How many teeth does an adult human normally have?' },
     answer: 32,
     tolerance: 8,
+    difficulty: 'medium',
+  },
+
+  {
+    id: 'chess-pieces',
+    prompt: { en: 'How many pieces are on a chessboard at the start of a game?' },
+    answer: 32,
+    tolerance: 10,
+    difficulty: 'medium',
+  },
+  {
+    id: 'playing-cards',
+    prompt: { en: 'How many cards are in a standard deck including both jokers?' },
+    answer: 54,
+    tolerance: 12,
+    difficulty: 'medium',
+  },
+  {
+    id: 'human-ribs',
+    prompt: { en: 'How many ribs does an adult human have?' },
+    answer: 24,
+    tolerance: 8,
+    difficulty: 'medium',
+  },
+  {
+    id: 'hungary-neighbours',
+    prompt: { en: 'How many countries share a border with Hungary?' },
+    answer: 7,
+    tolerance: 3,
+    difficulty: 'medium',
+  },
+  {
+    id: 'moon-landing-year',
+    prompt: { en: 'In which year did humans first walk on the Moon?' },
+    answer: 1969,
+    tolerance: 6,
+    isYear: true,
+    difficulty: 'medium',
+  },
+  {
+    id: 'great-wall-length',
+    prompt: { en: 'How long is the Great Wall of China, in kilometres?' },
+    answer: 21000,
+    tolerance: 9000,
+    unit: 'km',
     difficulty: 'medium',
   },
 
@@ -139,6 +192,7 @@ export const NUMBER_FACTS: NumberFact[] = [
     prompt: { en: 'In which year were the first modern Olympic Games held?' },
     answer: 1896,
     tolerance: 20,
+    isYear: true,
     difficulty: 'hard',
   },
   {
@@ -177,6 +231,56 @@ export const NUMBER_FACTS: NumberFact[] = [
     prompt: { en: 'In which year did Hungary join the European Union?' },
     answer: 2004,
     tolerance: 6,
+    isYear: true,
+    difficulty: 'hard',
+  },
+
+  {
+    id: 'sun-earth-distance',
+    prompt: { en: 'How far is the Sun from Earth, in millions of kilometres?' },
+    answer: 150,
+    tolerance: 60,
+    unit: 'million km',
+    difficulty: 'hard',
+  },
+  {
+    id: 'human-heartbeats-day',
+    prompt: { en: 'Roughly how many times does a human heart beat in a day, in thousands?' },
+    answer: 100,
+    tolerance: 45,
+    unit: 'thousand',
+    difficulty: 'hard',
+  },
+  {
+    id: 'amazon-length',
+    prompt: { en: 'How long is the Amazon river, in kilometres?' },
+    answer: 6400,
+    tolerance: 2200,
+    unit: 'km',
+    difficulty: 'hard',
+  },
+  {
+    id: 'internet-year',
+    prompt: { en: 'In which year did the World Wide Web become publicly available?' },
+    answer: 1991,
+    tolerance: 6,
+    isYear: true,
+    difficulty: 'hard',
+  },
+  {
+    id: 'berlin-wall-length',
+    prompt: { en: 'How long was the Berlin Wall, in kilometres?' },
+    answer: 155,
+    tolerance: 70,
+    unit: 'km',
+    difficulty: 'hard',
+  },
+  {
+    id: 'olympic-pool-length',
+    prompt: { en: 'How long is an Olympic swimming pool, in metres?' },
+    answer: 50,
+    tolerance: 18,
+    unit: 'm',
     difficulty: 'hard',
   },
 
@@ -245,6 +349,7 @@ export const NUMBER_FACTS: NumberFact[] = [
     prompt: { en: 'In which year was the Treaty of Trianon signed?' },
     answer: 1920,
     tolerance: 8,
+    isYear: true,
     difficulty: 'brutal',
   },
   {
@@ -253,6 +358,52 @@ export const NUMBER_FACTS: NumberFact[] = [
     answer: 49,
     tolerance: 30,
     unit: 'ha',
+    difficulty: 'brutal',
+  },
+  {
+    id: 'eiffel-steps',
+    prompt: { en: 'How many steps lead to the top of the Eiffel Tower?' },
+    answer: 1665,
+    tolerance: 700,
+    difficulty: 'brutal',
+  },
+  {
+    id: 'blue-whale-length',
+    prompt: { en: 'How long can a blue whale grow, in metres?' },
+    answer: 30,
+    tolerance: 14,
+    unit: 'm',
+    difficulty: 'brutal',
+  },
+  {
+    id: 'venice-islands',
+    prompt: { en: 'How many islands is the city of Venice built on?' },
+    answer: 118,
+    tolerance: 60,
+    difficulty: 'brutal',
+  },
+  {
+    id: 'trans-siberian',
+    prompt: { en: 'How long is the Trans-Siberian Railway, in kilometres?' },
+    answer: 9289,
+    tolerance: 3500,
+    unit: 'km',
+    difficulty: 'brutal',
+  },
+  {
+    id: 'suez-length',
+    prompt: { en: 'How long is the Suez Canal, in kilometres?' },
+    answer: 193,
+    tolerance: 90,
+    unit: 'km',
+    difficulty: 'brutal',
+  },
+  {
+    id: 'printing-press-year',
+    prompt: { en: 'Around which year did Gutenberg print his first Bible?' },
+    answer: 1455,
+    tolerance: 45,
+    isYear: true,
     difficulty: 'brutal',
   },
 ]

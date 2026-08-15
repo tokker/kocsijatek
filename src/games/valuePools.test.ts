@@ -24,10 +24,25 @@ describe('number facts', () => {
     }
   })
 
-  it('keeps the tolerance meaningfully below the answer for year questions', () => {
-    for (const fact of NUMBER_FACTS.filter((f) => f.answer > 1000 && f.answer < 2100)) {
-      // Egy évszámnál a tűréshatár nem lehet a válasz nagyságrendjében.
+  it('keeps the tolerance tight on year questions', () => {
+    // A jelölésre támaszkodunk, nem a szám nagyságára: az Eiffel-torony
+    // 1665 lépcsőfoka is évszámnak látszana egy tartomány-ellenőrzésnek.
+    for (const fact of NUMBER_FACTS.filter((f) => f.isYear)) {
       expect(fact.tolerance, fact.id).toBeLessThan(100)
+    }
+  })
+
+  it('marks every question that asks for a year', () => {
+    for (const fact of NUMBER_FACTS) {
+      if (/in which year|which year/i.test(fact.prompt.en)) {
+        expect(fact.isYear, `${fact.id} asks for a year but is not marked`).toBe(true)
+      }
+    }
+  })
+
+  it('does not mark a question that is not about a year', () => {
+    for (const fact of NUMBER_FACTS.filter((f) => f.isYear)) {
+      expect(fact.prompt.en, fact.id).toMatch(/year/i)
     }
   })
 

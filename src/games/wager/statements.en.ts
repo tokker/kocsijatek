@@ -27,6 +27,15 @@ export const STATEMENTS: Statement[] = [
   { id: 'great-wall-space', text: { en: 'The Great Wall of China is visible from space with the naked eye.' }, isTrue: false, difficulty: 'medium' },
   { id: 'hungarian-gender', text: { en: 'Hungarian has no grammatical gender.' }, isTrue: true, difficulty: 'medium' },
 
+  { id: 'pacific-vs-land', text: { en: 'The Pacific Ocean covers more area than all the land on Earth combined.' }, isTrue: true, difficulty: 'medium' },
+  { id: 'shrimp-heart', text: { en: 'A shrimp’s heart is located in its head.' }, isTrue: true, difficulty: 'medium' },
+  { id: 'banana-radioactive', text: { en: 'Bananas are slightly radioactive.' }, isTrue: true, difficulty: 'medium' },
+  { id: 'eiffel-temporary', text: { en: 'The Eiffel Tower was built as a temporary structure.' }, isTrue: true, difficulty: 'medium' },
+  { id: 'perihelion-july', text: { en: 'Earth is closest to the Sun in July.' }, isTrue: false, difficulty: 'medium' },
+  { id: 'knuckle-arthritis', text: { en: 'Cracking your knuckles causes arthritis.' }, isTrue: false, difficulty: 'medium' },
+  { id: 'hair-after-death', text: { en: 'Hair and fingernails keep growing after death.' }, isTrue: false, difficulty: 'medium' },
+  { id: 'sugar-hyperactive', text: { en: 'Sugar makes children hyperactive.' }, isTrue: false, difficulty: 'medium' },
+
   // ──────────────────────────────── HARD ────────────────────────────────
   { id: 'sahara-largest', text: { en: 'The Sahara is the largest desert on Earth.' }, isTrue: false, difficulty: 'hard' },
   { id: 'everest-tallest', text: { en: 'Measured from base to peak, Everest is the tallest mountain on Earth.' }, isTrue: false, difficulty: 'hard' },
@@ -44,6 +53,15 @@ export const STATEMENTS: Statement[] = [
   { id: 'finland-saunas', text: { en: 'Finland has more saunas than cars.' }, isTrue: true, difficulty: 'hard' },
   { id: 'iceland-mosquitoes', text: { en: 'Iceland has no native mosquitoes.' }, isTrue: true, difficulty: 'hard' },
   { id: 'chameleon-camouflage', text: { en: 'Chameleons change colour mainly to blend into their surroundings.' }, isTrue: false, difficulty: 'hard' },
+
+  { id: 'pringles-inventor', text: { en: 'The man who designed the Pringles tube was buried in one.' }, isTrue: true, difficulty: 'hard' },
+  { id: 'scots-snow-words', text: { en: 'Scots has more than four hundred words relating to snow.' }, isTrue: true, difficulty: 'hard' },
+  { id: 'dna-length', text: { en: 'The DNA in a single human body, uncoiled, would reach far beyond the Sun.' }, isTrue: true, difficulty: 'hard' },
+  { id: 'stars-vs-sand', text: { en: 'There are more stars in the observable universe than grains of sand on Earth.' }, isTrue: true, difficulty: 'hard' },
+  { id: 'everest-shrinking', text: { en: 'Mount Everest is getting shorter every year.' }, isTrue: false, difficulty: 'hard' },
+  { id: 'titanic-second', text: { en: 'The Titanic sank on its second voyage.' }, isTrue: false, difficulty: 'hard' },
+  { id: 'alcohol-brain-cells', text: { en: 'Drinking alcohol kills brain cells outright.' }, isTrue: false, difficulty: 'hard' },
+  { id: 'penny-skyscraper', text: { en: 'A coin dropped from a skyscraper could kill a person below.' }, isTrue: false, difficulty: 'hard' },
 
   // ─────────────────────────────── BRUTAL ───────────────────────────────
   { id: 'oxford-aztec', text: { en: 'Oxford University was already teaching before the Aztec Empire was founded.' }, isTrue: true, difficulty: 'brutal' },
