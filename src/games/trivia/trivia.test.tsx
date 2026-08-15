@@ -1,15 +1,11 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import triviaGame from './index'
+import triviaGame, { ROUND_MIX, poolFor } from './index'
 import { TRIVIA_QUESTIONS } from './questions.en'
 import { createRng } from '../../core/rng'
 
 describe('trivia content', () => {
-  it('has enough questions to fill a round', () => {
-    expect(TRIVIA_QUESTIONS.length).toBeGreaterThanOrEqual(30)
-  })
-
   it('uses unique ids', () => {
     const ids = TRIVIA_QUESTIONS.map((q) => q.id)
     expect(new Set(ids).size).toBe(ids.length)
@@ -34,6 +30,24 @@ describe('trivia content', () => {
       expect(question.prompt.en.endsWith('?'), question.id).toBe(true)
     }
   })
+
+  it('has no easy tier at all', () => {
+    // A közönség művelt huszonévesekből áll; a "medium" az alsó határ.
+    const tiers = new Set(TRIVIA_QUESTIONS.map((q) => q.difficulty))
+    expect([...tiers].sort()).toEqual(['brutal', 'hard', 'medium'])
+  })
+
+  it('has enough questions in every tier to build a round', () => {
+    for (const [difficulty, count] of ROUND_MIX) {
+      expect(poolFor(difficulty).length, difficulty).toBeGreaterThanOrEqual(count)
+    }
+  })
+
+  it('keeps a spare margin so consecutive rounds differ', () => {
+    for (const [difficulty, count] of ROUND_MIX) {
+      expect(poolFor(difficulty).length, difficulty).toBeGreaterThan(count)
+    }
+  })
 })
 
 describe('trivia game', () => {
@@ -47,9 +61,29 @@ describe('trivia game', () => {
     expect(a).not.toEqual(b)
   })
 
+  it('builds a 30 question round', () => {
+    expect(triviaGame.buildItems(createRng('s'))).toHaveLength(30)
+  })
+
   it('never repeats a question within one round', () => {
     const ids = triviaGame.buildItems(createRng('s')).map((q) => q.id)
     expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('escalates in difficulty across the round', () => {
+    const rank = { medium: 0, hard: 1, brutal: 2 }
+    const order = triviaGame.buildItems(createRng('s')).map((q) => rank[q.difficulty])
+    // Sosem lehet könnyebb, mint az előző kérdés.
+    for (let i = 1; i < order.length; i++) {
+      expect(order[i]).toBeGreaterThanOrEqual(order[i - 1])
+    }
+  })
+
+  it('makes the double-weighted closing questions the hardest ones', () => {
+    const items = triviaGame.buildItems(createRng('s'))
+    for (const question of items.slice(25)) {
+      expect(question.difficulty).toBe('brutal')
+    }
   })
 
   it('renders the first question with its choices', () => {
@@ -67,6 +101,6 @@ describe('trivia game', () => {
     render(<triviaGame.Component items={items} durationSec={900} onComplete={vi.fn()} />)
 
     // Egy kíváncsi utas a telefon forrásából sem tudhatja meg a választ.
-    expect(document.body.innerHTML).not.toMatch(/correct|bg-green/i)
+    expect(document.body.innerHTML).not.toMatch(/correct|difficulty|bg-green/i)
   })
 })

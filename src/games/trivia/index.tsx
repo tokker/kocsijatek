@@ -1,10 +1,28 @@
 import { QuizRunner } from '../../ui/QuizRunner'
-import { TRIVIA_QUESTIONS, type TriviaQuestion } from './questions.en'
+import { TRIVIA_QUESTIONS, type TriviaDifficulty, type TriviaQuestion } from './questions.en'
+import type { Rng } from '../../core/rng'
 import type { GameModule } from '../types'
 
-const QUESTION_COUNT = 30
-/** Az utolsó öt kérdés duplán számít — így az utolsó percekben fordulhat a kör. */
+/**
+ * Egy kör összetétele. A sorrend szándékos: a kör könnyebben indul és
+ * a végére nehezedik, így az utolsó öt — dupla pontot érő — kérdés a
+ * legnehezebbekből kerül ki, és a kör tényleg a hajrában dőlhet el.
+ */
+const ROUND_MIX: Array<[TriviaDifficulty, number]> = [
+  ['medium', 10],
+  ['hard', 12],
+  ['brutal', 8],
+]
+
 const DOUBLE_FROM = 25
+
+function poolFor(difficulty: TriviaDifficulty): TriviaQuestion[] {
+  return TRIVIA_QUESTIONS.filter((question) => question.difficulty === difficulty)
+}
+
+function buildRound(rng: Rng): TriviaQuestion[] {
+  return ROUND_MIX.flatMap(([difficulty, count]) => rng.pick(poolFor(difficulty), count))
+}
 
 const triviaGame: GameModule<TriviaQuestion> = {
   id: 'trivia',
@@ -12,8 +30,7 @@ const triviaGame: GameModule<TriviaQuestion> = {
   descriptionKey: 'games.trivia.description',
   icon: '🧠',
 
-  buildItems: (rng) =>
-    rng.pick(TRIVIA_QUESTIONS, Math.min(QUESTION_COUNT, TRIVIA_QUESTIONS.length)),
+  buildItems: buildRound,
 
   Component: ({ items, durationSec, onComplete }) => (
     <QuizRunner<TriviaQuestion>
@@ -29,3 +46,4 @@ const triviaGame: GameModule<TriviaQuestion> = {
 }
 
 export default triviaGame
+export { ROUND_MIX, poolFor }
