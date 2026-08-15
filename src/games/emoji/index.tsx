@@ -1,5 +1,6 @@
 import { EMOJI_PUZZLES, type EmojiPuzzle } from './puzzles.en'
 import { buildEscalatingRound, mixSize, type RoundMix } from '../difficulty'
+import { shuffleChoices } from '../choices'
 import { QuizRunner } from '../../ui/QuizRunner'
 import type { GameModule } from '../types'
 
@@ -18,7 +19,10 @@ const emojiGame: GameModule<EmojiPuzzle> = {
   descriptionKey: 'games.emoji.description',
   icon: '🎬',
 
-  buildItems: (rng) => buildEscalatingRound(EMOJI_PUZZLES, rng, ROUND_MIX),
+  buildItems: (rng) =>
+    buildEscalatingRound(EMOJI_PUZZLES, rng, ROUND_MIX).map((puzzle) =>
+      shuffleChoices(puzzle, rng),
+    ),
 
   Component: ({ items, durationSec, onComplete }) => (
     <QuizRunner<EmojiPuzzle>

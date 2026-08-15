@@ -36,6 +36,10 @@ export function roundWinners(done: Record<TeamId, GameResult>): TeamId[] {
   const entries = Object.entries(done)
   if (entries.length === 0) return []
   const best = Math.max(...entries.map(([, r]) => r.points))
+  // Nullponttal senki nem nyert. Enélkül egy olyan körben, ahol egyik autó
+  // sem talált el semmit, MINDKETTŐ koronát és győzelmi bónuszt kapott —
+  // a felület gyakorlatilag megjutalmazta a rossz tippeket.
+  if (best <= 0) return []
   return entries.filter(([, r]) => r.points === best).map(([id]) => id)
 }
 

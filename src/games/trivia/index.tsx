@@ -1,5 +1,6 @@
 import { TRIVIA_QUESTIONS, type TriviaQuestion } from './questions.en'
 import { buildEscalatingRound, mixSize, type RoundMix } from '../difficulty'
+import { shuffleChoices } from '../choices'
 import { QuizRunner } from '../../ui/QuizRunner'
 import type { GameModule } from '../types'
 
@@ -18,7 +19,10 @@ const triviaGame: GameModule<TriviaQuestion> = {
   descriptionKey: 'games.trivia.description',
   icon: '🧠',
 
-  buildItems: (rng) => buildEscalatingRound(TRIVIA_QUESTIONS, rng, ROUND_MIX),
+  buildItems: (rng) =>
+    buildEscalatingRound(TRIVIA_QUESTIONS, rng, ROUND_MIX).map((question) =>
+      shuffleChoices(question, rng),
+    ),
 
   Component: ({ items, durationSec, onComplete }) => (
     <QuizRunner<TriviaQuestion>

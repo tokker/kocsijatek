@@ -139,3 +139,39 @@ it('renders the screen that went black after a Letter Blitz round', () => {
   expect(screen.getByText(/7 words/)).toBeTruthy()
   expect(screen.getAllByText(/Car Two/).length).toBeGreaterThan(0)
 })
+
+/**
+ * A jelentett hiba: "azt írta a másik csapatnak, hogy maximum pontot
+ * kapott, pedig rosszul tippelt". A pontsáv korábban a VEZETŐHÖZ mérte
+ * magát, tehát az élen álló autó sávja mindig teljesen tele volt — egy
+ * 3/30-as kör is maxsávot kapott, ha a másik 2/30-at ért el.
+ */
+it('scales the score bar against the maximum, not against the leader', () => {
+  const state = normalizeRoomState({
+    meta, teams,
+    rounds: [null, { done: {
+      'team-a': { points: 100, rawScore: '3 / 30', items: [true], timeMs: 60_000 },
+      'team-b': { points: 67, rawScore: '2 / 30', items: [false], timeMs: 60_000 },
+    } }],
+  })!
+
+  const { container } = renderCompare(state)
+  const widths = [...container.querySelectorAll<HTMLElement>('[style*="width"]')].map(
+    (el) => el.style.width,
+  )
+  // 100 és 67 pont az 1000-es maximumból: 10% és 7%, nem 100% és 67%.
+  expect(widths).toEqual(['10%', '7%'])
+})
+
+it('crowns nobody in a round where neither team scored', () => {
+  const state = normalizeRoomState({
+    meta, teams,
+    rounds: [null, { done: {
+      'team-a': { points: 0, rawScore: '0 / 30', items: [false], timeMs: 60_000 },
+      'team-b': { points: 0, rawScore: '0 / 30', items: [false], timeMs: 60_000 },
+    } }],
+  })!
+
+  const { container } = renderCompare(state)
+  expect(container.textContent).not.toContain('👑')
+})

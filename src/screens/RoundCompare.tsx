@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { turningPoint, uniquenessBonus, wordEntriesOf, type TeamRound } from '../core/compare'
-import { roundWinners } from '../core/scoring'
+import { MAX_POINTS, roundWinners } from '../core/scoring'
 import type { RoomState, TeamId } from '../core/types'
 import { GAMES } from '../games/registry'
 import { useT, type TranslationKey } from '../i18n'
@@ -50,7 +50,6 @@ export function RoundCompare({
 
   const gameId = state.meta.schedule.find((entry) => entry.round === round)?.gameId
   const game = gameId ? GAMES[gameId] : undefined
-  const best = Math.max(...rounds.map((entry) => entry.result.points), 1)
 
   return (
     <section className="flex flex-col gap-4 rounded-3xl bg-slate-800 p-5">
@@ -80,11 +79,17 @@ export function RoundCompare({
               </span>
             </div>
 
-            {/* Pontsáv: a vezetőhöz viszonyítva, hogy a különbség látszódjon. */}
+            {/*
+              Pontsáv az ELÉRHETŐ maximumhoz mérve, nem a vezetőhöz.
+              Korábban a vezető sávja mindig teljesen tele volt — egy 3/30-as
+              kör is maxsávot kapott, ha a másik autó 2/30-at ért el. A
+              képernyő így azt üzente, hogy maximumot értek el, pedig
+              mindkét csapat rosszul tippelt.
+            */}
             <div className="h-2 overflow-hidden rounded-full bg-slate-900">
               <div
                 className={`h-full rounded-full ${color.bg}`}
-                style={{ width: `${Math.round((result.points / best) * 100)}%` }}
+                style={{ width: `${Math.round((result.points / MAX_POINTS) * 100)}%` }}
               />
             </div>
 

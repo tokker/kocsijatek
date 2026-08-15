@@ -1,6 +1,7 @@
 import { FlagSvg } from './FlagSvg'
 import { FLAG_QUESTIONS, type FlagQuestion } from './flags.en'
 import { buildEscalatingRound, mixSize, type RoundMix } from '../difficulty'
+import { shuffleChoices } from '../choices'
 import { QuizRunner } from '../../ui/QuizRunner'
 import type { GameModule } from '../types'
 
@@ -18,7 +19,10 @@ const flagsGame: GameModule<FlagQuestion> = {
   descriptionKey: 'games.flags.description',
   icon: '🚩',
 
-  buildItems: (rng) => buildEscalatingRound(FLAG_QUESTIONS, rng, ROUND_MIX),
+  buildItems: (rng) =>
+    buildEscalatingRound(FLAG_QUESTIONS, rng, ROUND_MIX).map((question) =>
+      shuffleChoices(question, rng),
+    ),
 
   Component: ({ items, durationSec, onComplete }) => (
     <QuizRunner<FlagQuestion>

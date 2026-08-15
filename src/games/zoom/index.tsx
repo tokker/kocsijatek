@@ -3,6 +3,7 @@ import { focusFor, type Focus } from './focus'
 import { FLAG_H, FLAG_W, FlagSvg, type FlagCrop } from '../flags/FlagSvg'
 import { FLAG_QUESTIONS, type FlagQuestion } from '../flags/flags.en'
 import { buildEscalatingRound, type RoundMix } from '../difficulty'
+import { shuffleChoices } from '../choices'
 import { normalize } from '../../core/scoring'
 import type { Rng } from '../../core/rng'
 import { useCountdown } from '../../ui/useCountdown'
@@ -43,7 +44,7 @@ function cropFor(item: ZoomItem, level: number): FlagCrop | undefined {
 
 function buildItems(rng: Rng): ZoomItem[] {
   return buildEscalatingRound(FLAG_QUESTIONS, rng, ROUND_MIX).map((question) => ({
-    ...question,
+    ...shuffleChoices(question, rng),
     focus: focusFor(question.spec, rng),
   }))
 }
