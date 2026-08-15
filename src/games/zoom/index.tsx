@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { focusFor, type Focus } from './focus'
 import { FLAG_H, FLAG_W, FlagSvg, type FlagCrop } from '../flags/FlagSvg'
 import { FLAG_QUESTIONS, type FlagQuestion } from '../flags/flags.en'
 import { buildEscalatingRound, type RoundMix } from '../difficulty'
@@ -21,7 +22,7 @@ const MAX_PER_ITEM = LEVEL_POINTS[0]
 
 export interface ZoomItem extends FlagQuestion {
   /** A kinagyított pont a zászlón, 0..1 arányban. Seedből, tehát mindenkinek ugyanaz. */
-  focus: { fx: number; fy: number }
+  focus: Focus
 }
 
 function cropFor(item: ZoomItem, level: number): FlagCrop | undefined {
@@ -43,9 +44,7 @@ function cropFor(item: ZoomItem, level: number): FlagCrop | undefined {
 function buildItems(rng: Rng): ZoomItem[] {
   return buildEscalatingRound(FLAG_QUESTIONS, rng, ROUND_MIX).map((question) => ({
     ...question,
-    // A széleket kerüljük: ott gyakran egyszínű a mező, és a feladat
-    // megfejthetetlen lenne ahelyett, hogy nehéz lenne.
-    focus: { fx: 0.25 + rng.next() * 0.5, fy: 0.25 + rng.next() * 0.5 },
+    focus: focusFor(question.spec, rng),
   }))
 }
 
