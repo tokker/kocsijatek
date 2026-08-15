@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { isRoundUnlocked, participatingTeams, teamRoundStatus, teamsStillPlaying } from './roundGate'
+import {
+  currentRoundOf,
+  isRoundUnlocked,
+  participatingTeams,
+  teamRoundStatus,
+  teamsStillPlaying,
+} from './roundGate'
 import type { GameResult, RoomState, TeamInfo } from './types'
 
 const result = (points: number): GameResult => ({
@@ -109,6 +115,34 @@ describe('teamRoundStatus', () => {
   it('reports done even if the start timestamp is missing', () => {
     const state = room({ rounds: { 1: { done: { car1: result(5) } } } })
     expect(teamRoundStatus(state, 1, 'car1')).toBe('done')
+  })
+})
+
+describe('currentRoundOf', () => {
+  it('starts at round 1', () => {
+    expect(currentRoundOf(room())).toBe(1)
+  })
+
+  it('stays on the round while one team is unfinished', () => {
+    const state = room({ rounds: { 1: { done: { car1: result(5) } } } })
+    expect(currentRoundOf(state)).toBe(1)
+  })
+
+  it('advances once everyone has finished', () => {
+    const state = room({ rounds: { 1: { done: { car1: result(5), car2: result(6) } } } })
+    expect(currentRoundOf(state)).toBe(2)
+  })
+
+  it('skips over several completed rounds', () => {
+    const closed = { done: { car1: result(5), car2: result(6) } }
+    const state = room({ rounds: { 1: closed, 2: closed, 3: closed } })
+    expect(currentRoundOf(state)).toBe(4)
+  })
+
+  it('does not skip a round that only one team closed', () => {
+    const closed = { done: { car1: result(5), car2: result(6) } }
+    const state = room({ rounds: { 1: closed, 2: { done: { car1: result(5) } } } })
+    expect(currentRoundOf(state)).toBe(2)
   })
 })
 

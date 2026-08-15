@@ -1,5 +1,6 @@
 import { MockAdapter } from './MockAdapter'
 import type { SyncAdapter } from './SyncAdapter'
+import type { RoomState } from '../core/types'
 
 let instance: SyncAdapter | null = null
 
@@ -18,6 +19,21 @@ export async function getSyncAdapter(): Promise<SyncAdapter> {
     }
   }
   return instance
+}
+
+/** Egyszeri olvasás: az első kiadott állapot után azonnal leiratkozik. */
+export function readRoomOnce(
+  adapter: SyncAdapter,
+  roomCode: string,
+): Promise<RoomState | null> {
+  return new Promise((resolve) => {
+    const off = adapter.subscribe(roomCode, (state) => {
+      resolve(state)
+      // A leiratkozás egy ütemmel később fut: a MockAdapter szinkron
+      // hívja a callbacket, tehát `off` itt még nincs értéket kapva.
+      queueMicrotask(() => off())
+    })
+  })
 }
 
 export type { ConnectionStatus, SyncAdapter } from './SyncAdapter'

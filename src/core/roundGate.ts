@@ -30,6 +30,17 @@ export function isRoundUnlocked(state: RoomState, round: number): boolean {
   return teams.every((team) => done[team.id] != null)
 }
 
+/**
+ * Az aktuális kör: a legkisebb sorszám, amit még nem fejezett be mindenki.
+ * LEVEZETETT érték, nem tárolt — ezért két eszköz sosem kerülhet
+ * ellentmondásba egymással, ugyanabból az adatból ugyanazt számolják.
+ */
+export function currentRoundOf(state: RoomState): number {
+  let round = 1
+  while (isRoundUnlocked(state, round + 1)) round++
+  return round
+}
+
 export function teamRoundStatus(
   state: RoomState,
   round: number,
