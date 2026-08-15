@@ -87,18 +87,31 @@ bekapcsolása és `"auth != null"` hozzáadása a `.write` feltételhez.
 
 ---
 
-## Publikálás — Cloudflare Pages (ingyenes)
+## Publikálás — Cloudflare (ingyenes)
 
-1. Töltsd fel a repót GitHubra
-2. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages →
-   Create → Pages → Connect to Git**
-3. Build command: `npm run build`, output könyvtár: `dist`
-4. **Settings → Environment variables** — vedd fel a négy `VITE_` változót a
-   `.env.local` fájlból
+A repó GitHubon van, a Cloudflare pedig minden pushra újraépíti. Build
+parancs: `npm run build`, kimeneti könyvtár: `dist`.
 
-> A Vite a `VITE_` változókat **build időben** helyettesíti be, nem futásidőben
-> olvassa. Ezért kell őket a build beállításai közé felvenni — enélkül a kész
-> csomagban üres string maradna a helyükön, és az app nem találná a szervert.
+**A Firebase-beállítások a verziókövetett `.env.production` fájlban vannak**,
+nem a Cloudflare felületén. Ez szándékos:
+
+> A Vite a `VITE_` változókat **build időben** égeti bele a JavaScript
+> csomagba, nem futásidőben olvassa. Egy Worker futásidejű változója tehát
+> soha nem érne el a böngészőig — a beállításnak a fordításkor kell ott
+> lennie. A repóba téve ez magától megoldódik, és nem lehet elfelejteni.
+
+A Firebase webes konfiguráció nem titok: nem jogosultságot ad, csak azonosítja
+a projektet, és a böngészőnek amúgy is ki kell szolgálni — bárki megnézheti a
+kiszolgált csomagban. A tényleges védelmet a **szabályok** adják, lásd fentebb.
+
+A `.env.local` továbbra sincs verziókövetve, és fejlesztéskor az érvényes.
+
+### Ha mégis mock módban indulna
+
+Ha az oldal tetején narancssárga sáv jelenik meg („Other devices will not see
+this game"), akkor a build nem látta a beállításokat, és az app csak a saját
+böngészőjében tárol. Ilyenkor két fül ugyanazon a gépen látja egymást, két
+külön telefon viszont soha. A sáv megnevezi, melyik változó hiányzik.
 
 ## Indulás előtti teendők
 
