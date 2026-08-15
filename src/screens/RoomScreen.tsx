@@ -3,6 +3,7 @@ import { RoundCompare } from './RoundCompare'
 import { createRng } from '../core/rng'
 import type { GameResult } from '../core/types'
 import { getGame } from '../games/registry'
+import { useT, type TranslationKey } from '../i18n'
 import type { SyncAdapter } from '../sync'
 import { useRoom } from '../sync/useRoom'
 import type { Session } from '../state/session'
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function RoomScreen({ adapter, session, onLeave }: Props) {
+  const { t } = useT()
   const room = useRoom(adapter, session.roomCode, session.teamId)
   const [playing, setPlaying] = useState(false)
 
@@ -29,7 +31,11 @@ export function RoomScreen({ adapter, session, onLeave }: Props) {
   )
 
   if (!room.state) {
-    return <Centered>Connecting to room {session.roomCode}…</Centered>
+    return (
+      <Centered>
+        {t('room.connecting')} {session.roomCode}…
+      </Centered>
+    )
   }
 
   const handleStart = async () => {
@@ -78,17 +84,18 @@ function Centered({ children }: { children: React.ReactNode }) {
 }
 
 function Header({ room, session, onLeave }: { room: Room; session: Session; onLeave: () => void }) {
+  const { t } = useT()
   const [confirming, setConfirming] = useState(false)
 
   return (
     <header className="flex items-center justify-between">
       <div>
-        <p className="text-xs text-slate-500">Room code</p>
+        <p className="text-xs text-slate-500">{t('join.roomCode')}</p>
         <p className="text-2xl font-bold tracking-[0.3em]">{session.roomCode}</p>
       </div>
       <div className="flex flex-col items-end gap-1">
         <p className={`text-xs ${room.status === 'online' ? 'text-slate-500' : 'text-amber-400'}`}>
-          {room.status === 'online' ? 'Synced' : 'Offline — will sync later'}
+          {room.status === 'online' ? t('room.synced') : t('room.offline')}
         </p>
         {/*
           Két lépéses kilépés. Egyetlen koppintásra kilépni egy rázkódó
@@ -97,15 +104,15 @@ function Header({ room, session, onLeave }: { room: Room; session: Session; onLe
         {confirming ? (
           <div className="flex gap-2">
             <button onClick={onLeave} className="rounded-lg bg-red-600 px-3 py-1 text-sm">
-              Leave
+              {t('room.leaveConfirm')}
             </button>
             <button onClick={() => setConfirming(false)} className="rounded-lg bg-slate-700 px-3 py-1 text-sm">
-              Stay
+              {t('room.stay')}
             </button>
           </div>
         ) : (
           <button onClick={() => setConfirming(true)} className="text-sm text-slate-500 underline">
-            Leave game
+            {t('room.leave')}
           </button>
         )}
       </div>
@@ -126,51 +133,58 @@ function StartPanel({
   colorIndex: number
   onStart: () => void
 }) {
+  const { t } = useT()
   return (
     <section className="flex flex-col items-center gap-4 rounded-3xl bg-slate-800 p-6 text-center">
-      <p className="text-sm text-slate-400">Round {round}</p>
+      <p className="text-sm text-slate-400">
+        {t('round.label')} {round}
+      </p>
       <p className="text-5xl">{game?.icon ?? '🎲'}</p>
-      <h2 className="text-2xl font-bold">{game?.id ?? 'Unknown game'}</h2>
+      <h2 className="text-2xl font-bold">
+        {game ? t(game.titleKey as TranslationKey) : '—'}
+      </h2>
       <p className="text-slate-400">
         {resuming
-          ? 'You already started this round. Starting again restarts it from the first question.'
-          : 'Start whenever your car is ready. The other car can start later.'}
+          ? t('round.resumeHint')
+          : game
+            ? t(game.descriptionKey as TranslationKey)
+            : t('round.startHint')}
       </p>
       <button
         onClick={onStart}
         className={`min-h-16 w-full rounded-2xl text-2xl font-bold ${teamColor(colorIndex).bg}`}
       >
-        {resuming ? 'Restart round' : 'Start round'}
+        {resuming ? t('round.restart') : t('round.start')}
       </button>
     </section>
   )
 }
 
 function WaitingPanel({ names }: { names: string[] }) {
+  const { t } = useT()
   return (
     <section className="flex flex-col items-center gap-3 rounded-3xl bg-slate-800 p-6 text-center">
       <p className="text-5xl">⏳</p>
-      <h2 className="text-xl font-bold">Round finished</h2>
-      {names.length > 0 ? (
-        <p className="text-slate-400">
-          Waiting for {names.join(', ')} to finish before the next round opens.
-        </p>
-      ) : (
-        <p className="text-slate-400">Opening the next round…</p>
-      )}
+      <h2 className="text-xl font-bold">{t('round.finished')}</h2>
+      <p className="text-slate-400">
+        {names.length > 0
+          ? t('round.waitingFor', { names: names.join(', ') })
+          : t('round.opening')}
+      </p>
     </section>
   )
 }
 
 
 function Standings({ room, myTeamId }: { room: Room; myTeamId: string }) {
+  const { t } = useT()
   if (!room.state) return null
   const rows = room.standings.filter((row) => row.roundsPlayed > 0)
   if (rows.length === 0) return null
 
   return (
     <section className="flex flex-col gap-2 rounded-3xl bg-slate-800 p-5">
-      <h2 className="text-sm text-slate-400">Overall</h2>
+      <h2 className="text-sm text-slate-400">{t('standings.title')}</h2>
       {rows.map((row, index) => {
         const team = room.state!.teams[row.teamId]
         return (
@@ -179,7 +193,7 @@ function Standings({ room, myTeamId }: { room: Room; myTeamId: string }) {
               {index + 1}. {team?.emoji} {team?.name ?? row.teamId}
             </span>
             <span className="tabular-nums text-slate-300">
-              {row.total} pts · {row.roundsWon} won
+              {row.total} {t('standings.points')} · {row.roundsWon} {t('standings.won')}
             </span>
           </div>
         )

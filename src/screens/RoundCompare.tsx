@@ -3,6 +3,7 @@ import { turningPoint, uniquenessBonus, wordEntriesOf, type TeamRound } from '..
 import { roundWinners } from '../core/scoring'
 import type { RoomState, TeamId } from '../core/types'
 import { GAMES } from '../games/registry'
+import { useT, type TranslationKey } from '../i18n'
 import { teamColor } from '../ui/teamColors'
 
 function formatDuration(ms: number): string {
@@ -25,6 +26,8 @@ export function RoundCompare({
   round: number
   myTeamId: TeamId
 }) {
+  const { t } = useT()
+
   const rounds: TeamRound[] = useMemo(() => {
     const done = state.rounds?.[round]?.done ?? {}
     return Object.entries(done)
@@ -52,9 +55,11 @@ export function RoundCompare({
   return (
     <section className="flex flex-col gap-4 rounded-3xl bg-slate-800 p-5">
       <header className="flex items-baseline justify-between">
-        <h2 className="text-sm text-slate-400">Round {round}</h2>
+        <h2 className="text-sm text-slate-400">
+          {t('round.label')} {round}
+        </h2>
         <span className="text-sm text-slate-300">
-          {game?.icon} {gameId}
+          {game?.icon} {game ? t(game.titleKey as TranslationKey) : gameId}
         </span>
       </header>
 
@@ -85,29 +90,34 @@ export function RoundCompare({
 
             <ItemGrid items={result.items} pivotIndex={pivot?.teamId === teamId ? pivot.index : -1} />
 
-            <p className="text-xs text-slate-500">Took {formatDuration(result.timeMs)}</p>
+            <p className="text-xs text-slate-500">
+              {t('compare.took')} {formatDuration(result.timeMs)}
+            </p>
           </div>
         )
       })}
 
       {pivot && (
         <p className="rounded-2xl bg-slate-900 p-3 text-center text-sm">
-          <span className="text-slate-400">Turning point: </span>
-          question {pivot.index + 1}, won only by{' '}
-          <span className="font-semibold">{state.teams[pivot.teamId]?.name ?? pivot.teamId}</span>
+          <span className="text-slate-400">{t('compare.turningPoint')}: </span>
+          {/* Egy mondatban, hogy a fordító átrendezhesse a szórendet. */}
+          {t('compare.turningPointDetail', {
+            number: pivot.index + 1,
+            team: state.teams[pivot.teamId]?.name ?? pivot.teamId,
+          })}
         </p>
       )}
 
       {bonuses && (
         <div className="flex flex-col gap-1 rounded-2xl bg-slate-900 p-3 text-sm">
-          <p className="text-slate-400">Uniqueness bonus — obscure answers pay triple</p>
+          <p className="text-slate-400">{t('compare.uniqueness')}</p>
           {bonuses
             .sort((a, b) => b.bonus - a.bonus)
             .map((row) => (
               <div key={row.teamId} className="flex justify-between">
                 <span>{state.teams[row.teamId]?.name ?? row.teamId}</span>
                 <span className="tabular-nums text-slate-300">
-                  {row.unique} only yours · {row.shared} shared · +{row.bonus}
+                  {row.unique} {t('compare.onlyYours')} · {row.shared} {t('compare.shared')} · +{row.bonus}
                 </span>
               </div>
             ))}
