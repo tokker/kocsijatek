@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { RoundCompare } from './RoundCompare'
 import { createRng } from '../core/rng'
 import type { GameResult } from '../core/types'
-import { getGame } from '../games/registry'
+import { GAMES } from '../games/registry'
+import type { GameModule } from '../games/types'
 import { useT, type TranslationKey } from '../i18n'
 import type { SyncAdapter } from '../sync'
 import { useRoom } from '../sync/useRoom'
@@ -24,7 +25,12 @@ export function RoomScreen({ adapter, session, onLeave }: Props) {
   // megjelenjen ahelyett, hogy azonnal a játékba esnénk.
   useEffect(() => setPlaying(false), [room.currentRound])
 
-  const game = room.currentGameId ? getGame(room.currentGameId) : null
+  // Szándékosan NEM a `getGame`, ami ismeretlen azonosítóra kivételt dob:
+  // a menetrend a szoba létrehozásakor íródik be, tehát egy régebbi vagy
+  // újabb build által készített szoba olyan játékot is kérhet, amit ez a
+  // változat nem ismer. Renderelés közbeni kivétel = fekete képernyő; egy
+  // kihagyható kör sokkal olcsóbb.
+  const game = room.currentGameId ? (GAMES[room.currentGameId] ?? null) : null
   const items = useMemo(
     () => (game && room.currentSeed ? game.buildItems(createRng(room.currentSeed)) : []),
     [game, room.currentSeed],
@@ -127,7 +133,7 @@ function StartPanel({
   colorIndex,
   onStart,
 }: {
-  game: ReturnType<typeof getGame> | null
+  game: GameModule | null
   round: number
   resuming: boolean
   colorIndex: number

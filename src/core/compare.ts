@@ -15,11 +15,11 @@ export interface TeamRound {
 export function turningPoint(rounds: TeamRound[]): { index: number; teamId: TeamId } | null {
   if (rounds.length < 2) return null
 
-  const length = Math.max(...rounds.map((entry) => entry.result.items.length))
+  const length = Math.max(...rounds.map((entry) => entry.result.items?.length ?? 0))
   let best: { index: number; teamId: TeamId } | null = null
 
   for (let index = 0; index < length; index++) {
-    const solvers = rounds.filter((entry) => entry.result.items[index] === true)
+    const solvers = rounds.filter((entry) => entry.result.items?.[index] === true)
     // Csak akkor fordulópont, ha pontosan egy csapat oldotta meg.
     if (solvers.length !== 1) continue
     best = { index, teamId: solvers[0].teamId }
@@ -30,10 +30,10 @@ export function turningPoint(rounds: TeamRound[]): { index: number; teamId: Team
 
 /** Feladatonként hány csapat oldotta meg — ebből látszik, mi volt nehéz. */
 export function itemDifficulty(rounds: TeamRound[]): number[] {
-  const length = Math.max(0, ...rounds.map((entry) => entry.result.items.length))
+  const length = Math.max(0, ...rounds.map((entry) => entry.result.items?.length ?? 0))
   return Array.from(
     { length },
-    (_, index) => rounds.filter((entry) => entry.result.items[index] === true).length,
+    (_, index) => rounds.filter((entry) => entry.result.items?.[index] === true).length,
   )
 }
 
@@ -71,7 +71,9 @@ export function uniquenessBonus(
   const owners = new Map<string, Set<TeamId>>()
   for (const teamId of teamIds) {
     for (const entry of entriesByTeam[teamId] ?? []) {
-      for (const word of entry.words) {
+      // A `words` sosem lehetne hiányzó, de itt egy kivétel a teljes
+      // képernyőt viszi — lásd `wordEntriesOf`.
+      for (const word of entry.words ?? []) {
         const key = `${entry.key}::${word}`
         if (!owners.has(key)) owners.set(key, new Set())
         owners.get(key)!.add(teamId)
@@ -84,8 +86,9 @@ export function uniquenessBonus(
     let unique = 0
 
     for (const entry of entriesByTeam[teamId] ?? []) {
-      for (const word of entry.words) {
-        const holders = owners.get(`${entry.key}::${word}`)!
+      for (const word of entry.words ?? []) {
+        const holders = owners.get(`${entry.key}::${word}`)
+        if (!holders) continue
         if (holders.size > 1) shared += 1
         else unique += 1
       }
@@ -100,7 +103,16 @@ export function uniquenessBonus(
   })
 }
 
-/** Kinyeri a szólistákat az eredményekből, ha a játék adott ilyet. */
+/**
+ * Kinyeri a szólistákat az eredményekből, ha a játék adott ilyet.
+ *
+ * Ez az EGYETLEN hely, ahol az átlátszatlan `payload` tipizált adattá
+ * válik, ezért a Firebase torzításait is itt kell kiegyenlíteni. A Letter
+ * Blitz minden feladathoz beküld egy `words` listát, üresen is — a
+ * Firebase viszont az üres tömböt nem tárolja, hanem TÖRLI a kulcsot.
+ * Egy kihagyott betűből tehát `{ key: 'A' }` lesz `words` nélkül, és a
+ * bónuszszámoló `for...of`-ja ezen szállt el, renderelés közben.
+ */
 export function wordEntriesOf(rounds: TeamRound[]): Record<TeamId, WordEntry[]> | null {
   const out: Record<TeamId, WordEntry[]> = {}
   let found = false
@@ -108,7 +120,10 @@ export function wordEntriesOf(rounds: TeamRound[]): Record<TeamId, WordEntry[]> 
   for (const { teamId, result } of rounds) {
     const entries = (result.payload as { entries?: WordEntry[] } | undefined)?.entries
     if (!entries) continue
-    out[teamId] = entries
+    out[teamId] = Object.values(entries).map((entry) => ({
+      key: entry?.key,
+      words: Array.isArray(entry?.words) ? entry.words.filter((word) => word != null) : [],
+    }))
     found = true
   }
 

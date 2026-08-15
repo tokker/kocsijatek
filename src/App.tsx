@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react'
 import { LanguageProvider, LANGUAGES, useT } from './i18n'
 import { JoinScreen } from './screens/JoinScreen'
 import { RoomScreen } from './screens/RoomScreen'
-import { useSession } from './state/session'
+import { clearStoredSession, useSession } from './state/session'
 import { currentBackend, getSyncAdapter, type SyncAdapter } from './sync'
+import { ErrorBoundary } from './ui/ErrorBoundary'
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <Shell />
-    </LanguageProvider>
+    // A hibahatár a LEGKÜLSŐ elem: ha bármi elszáll renderelés közben, a
+    // képernyő ne feketén maradjon, mert abból az autóban nincs visszaút.
+    <ErrorBoundary onReset={clearStoredSession}>
+      <LanguageProvider>
+        <Shell />
+      </LanguageProvider>
+    </ErrorBoundary>
   )
 }
 

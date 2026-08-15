@@ -127,8 +127,8 @@ export function RoundCompare({
   )
 }
 
-function ItemGrid({ items, pivotIndex }: { items: boolean[]; pivotIndex: number }) {
-  if (items.length === 0) return null
+function ItemGrid({ items, pivotIndex }: { items?: boolean[]; pivotIndex: number }) {
+  if (!items?.length) return null
   return (
     <div className="flex flex-wrap gap-1">
       {items.map((correct, index) => (

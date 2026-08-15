@@ -54,7 +54,10 @@ export function standings(state: RoomState): StandingRow[] {
 
   for (const [key, round] of Object.entries(state.rounds ?? {})) {
     const roundNumber = Number(key)
-    const done = round.done ?? {}
+    // A `round` sosem lehetne null, de ha egy szinkron-háttér mégis lyukas
+    // listát ad, az egy renderelés közbeni kivétel — vagyis fekete képernyő,
+    // menet közben, út közepén. Egy hiányzó kör kihagyása arányosabb ár.
+    const done = round?.done ?? {}
     const expected = participatingTeams(state, roundNumber)
 
     // Csak a mindenki által lezárt köröket számoljuk bele. Enélkül az

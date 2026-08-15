@@ -32,6 +32,19 @@ function read(): Session | null {
 }
 
 /**
+ * Munkamenet törlése hook nélkül. A hibahatárnak akkor is kell egy út
+ * kifelé, amikor a React fa már leszerelt, tehát hookot nem hívhat.
+ */
+export function clearStoredSession(): void {
+  try {
+    localStorage.removeItem(storageKey())
+  } catch {
+    // A privát módban letiltott localStorage nem ok arra, hogy a
+    // hibaképernyő is elszálljon.
+  }
+}
+
+/**
  * A csapatazonosító és a szobakód localStorage-ban él. Ez nem kényelmi
  * kérdés: egy rázkódó autóban a képernyő véletlen frissítése tényleg meg
  * fog történni, és enélkül a csapat kiesne a játékból a kör közepén.

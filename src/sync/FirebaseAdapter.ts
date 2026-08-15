@@ -9,6 +9,7 @@ import {
   set,
   update,
 } from 'firebase/database'
+import { normalizeRoomState } from './normalize'
 import type { ConnectionStatus, SyncAdapter } from './SyncAdapter'
 import type { GameResult, RoomMeta, RoomState, TeamId, TeamInfo } from '../core/types'
 
@@ -56,15 +57,10 @@ export class FirebaseAdapter implements SyncAdapter {
 
   subscribe(roomCode: string, onState: (state: RoomState | null) => void): () => void {
     return onValue(ref(this.db, `rooms/${roomCode}`), (snapshot) => {
-      const value = snapshot.val()
-      if (!value?.meta) return onState(null)
-      // A Firebase nem tárol üres objektumot, ezért a hiányzó ágakat
-      // alapértelmezzük — különben a hívóknak kellene mindenhol védekezni.
-      onState({
-        meta: value.meta,
-        teams: value.teams ?? {},
-        rounds: value.rounds ?? {},
-      })
+      // A Firebase se az üres ágakat, se az egész kulcsú objektumokat nem
+      // adja vissza úgy, ahogy beírtuk — lásd `normalize.ts`. A helyreállítás
+      // ITT történik, hogy a UI mindig a típusban leírt alakot lássa.
+      onState(normalizeRoomState(snapshot.val()))
     })
   }
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   itemDifficulty,
+  SHARED_WORD_POINTS,
   turningPoint,
   uniquenessBonus,
   wordEntriesOf,
@@ -133,5 +134,64 @@ describe('wordEntriesOf', () => {
 
   it('returns null for games that carry no word lists', () => {
     expect(wordEntriesOf([{ teamId: 'car1', result: result([true]) }])).toBeNull()
+  })
+})
+
+/**
+ * A Letter Blitz kör utáni fekete képernyő.
+ *
+ * A játék minden feladathoz beküld egy `words` listát, üresen is. A
+ * Firebase az üres tömböt nem tárolja, hanem törli a kulcsot, tehát egy
+ * kihagyott betűből `{ key: 'A' }` lesz. A bónuszszámoló `for...of`-ja
+ * ezen dobott kivételt — renderelés közben, vagyis a teljes app eltűnt.
+ *
+ * Ez CSAK Letter Blitz után jelentkezett, és csak a KÖVETKEZŐ kör
+ * képernyőjén, mert az összehasonlító az előző kört mutatja. Tíz játékból
+ * egy: jellemzően az ötödik kör környékén.
+ */
+describe('a Letter Blitz round that came back through Firebase', () => {
+  const blankLetter = (teamId: string, entries: unknown): TeamRound =>
+    ({
+      teamId,
+      result: { points: 100, rawScore: '3 words', items: [true], timeMs: 1000, payload: { entries } },
+    }) as TeamRound
+
+  it('survives an entry whose empty word list Firebase deleted', () => {
+    const rounds = [
+      blankLetter('team-a', [{ key: 'A', words: ['apple'] }, { key: 'B' }]),
+      blankLetter('team-b', [{ key: 'A', words: ['apple', 'axe'] }, { key: 'B', words: ['bus'] }]),
+    ]
+
+    const entries = wordEntriesOf(rounds)!
+    expect(() => uniquenessBonus(entries)).not.toThrow()
+
+    const rows = uniquenessBonus(entries)
+    const a = rows.find((row) => row.teamId === 'team-a')!
+    const b = rows.find((row) => row.teamId === 'team-b')!
+
+    // "apple" közös, ezért mindkettőnek 1 pont; a többi csak az egyiké.
+    expect(a).toMatchObject({ shared: 1, unique: 0, bonus: SHARED_WORD_POINTS })
+    expect(b).toMatchObject({ shared: 1, unique: 2 })
+  })
+
+  it('survives a team that left every letter blank', () => {
+    const rounds = [
+      blankLetter('team-a', [{ key: 'A' }, { key: 'B' }]),
+      blankLetter('team-b', [{ key: 'A', words: ['ant'] }, { key: 'B', words: ['bus'] }]),
+    ]
+    const entries = wordEntriesOf(rounds)!
+    const rows = uniquenessBonus(entries)
+    expect(rows.find((row) => row.teamId === 'team-a')).toMatchObject({ bonus: 0 })
+    expect(rows.find((row) => row.teamId === 'team-b')).toMatchObject({ unique: 2 })
+  })
+
+  it('normalizes the entry list itself, which Firebase may key as an object', () => {
+    const rounds = [
+      blankLetter('team-a', { 0: { key: 'A', words: ['ant'] }, 1: { key: 'B' } }),
+      blankLetter('team-b', { 0: { key: 'A', words: ['ant'] }, 1: { key: 'B', words: ['bus'] } }),
+    ]
+    const entries = wordEntriesOf(rounds)!
+    expect(entries['team-a']).toHaveLength(2)
+    expect(() => uniquenessBonus(entries)).not.toThrow()
   })
 })
