@@ -30,16 +30,4 @@ export function scramble(word: string, rng: Rng): string {
   return swapped.join('')
 }
 
-/**
- * Beírt válasz összehasonlítása. Elnéző a kisbetűvel, a szóközzel és az
- * ékezetekkel — autóban, mozgó telefonon gépelve ezek nem tudásbeli
- * különbségek, csak bosszúságok lennének.
- */
-export function normalizeGuess(input: string): string {
-  return input
-    .trim()
-    .toUpperCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^A-Z]/g, '')
-}
+export { normalizeWord as normalizeGuess } from '../text'
