@@ -3,7 +3,7 @@ import { LanguageProvider, LANGUAGES, useT } from './i18n'
 import { JoinScreen } from './screens/JoinScreen'
 import { RoomScreen } from './screens/RoomScreen'
 import { useSession } from './state/session'
-import { getSyncAdapter, type SyncAdapter } from './sync'
+import { currentBackend, getSyncAdapter, type SyncAdapter } from './sync'
 
 export default function App() {
   return (
@@ -30,6 +30,7 @@ function Shell() {
   if (!session) {
     return (
       <div className="flex h-full flex-col">
+        <BackendWarning />
         <div className="flex-1 overflow-y-auto">
           <JoinScreen adapter={adapter} onJoined={setSession} />
         </div>
@@ -38,7 +39,36 @@ function Shell() {
     )
   }
 
-  return <RoomScreen adapter={adapter} session={session} onLeave={clearSession} />
+  return (
+    <div className="flex h-full flex-col">
+      <BackendWarning />
+      <div className="flex-1 overflow-hidden">
+        <RoomScreen adapter={adapter} session={session} onLeave={clearSession} />
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Figyelmeztetés, ha az éles build nem éri el a Firebase-t.
+ *
+ * Ilyenkor a mock adapter fut, ami csak a böngésző saját tárolóját
+ * használja: két fül UGYANAZON a gépen látja egymást, két külön telefon
+ * viszont soha. Ez a leggonoszabb hibamód, mert működőnek látszik,
+ * amíg egy eszközön próbálod — ezért kell kiabálnia.
+ */
+function BackendWarning() {
+  const backend = currentBackend()
+  if (!backend.problem) return null
+
+  return (
+    <div className="bg-amber-500 px-4 py-3 text-sm text-slate-900">
+      <p className="font-bold">Other devices will not see this game</p>
+      <p className="mt-0.5">
+        Scores are only stored in this browser. {backend.problem}
+      </p>
+    </div>
+  )
 }
 
 /**

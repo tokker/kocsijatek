@@ -1,8 +1,14 @@
+import { backendStatus, type BackendStatus } from './backend'
 import { MockAdapter } from './MockAdapter'
 import type { SyncAdapter } from './SyncAdapter'
 import type { RoomState } from '../core/types'
 
 let instance: SyncAdapter | null = null
+
+/** Melyik háttér fut, és ha nem a Firebase, akkor miért nem. */
+export function currentBackend(): BackendStatus {
+  return backendStatus(import.meta.env, import.meta.env.PROD)
+}
 
 /**
  * Egyetlen adapter az egész appra, a környezet alapján kiválasztva.
@@ -11,7 +17,7 @@ let instance: SyncAdapter | null = null
  */
 export async function getSyncAdapter(): Promise<SyncAdapter> {
   if (!instance) {
-    if (import.meta.env.VITE_SYNC_BACKEND === 'firebase') {
+    if (currentBackend().kind === 'firebase') {
       const { FirebaseAdapter } = await import('./FirebaseAdapter')
       instance = new FirebaseAdapter()
     } else {
@@ -36,4 +42,5 @@ export function readRoomOnce(
   })
 }
 
+export type { BackendKind, BackendStatus } from './backend'
 export type { ConnectionStatus, SyncAdapter } from './SyncAdapter'
