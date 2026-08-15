@@ -1,8 +1,10 @@
+import anagramGame from './anagram'
 import closestGame from './closest'
 import emojiGame from './emoji'
 import flagsGame from './flags'
 import triviaGame from './trivia'
 import wagerGame from './wager'
+import zoomGame from './zoom'
 import type { GameModule } from './types'
 
 /**
@@ -15,6 +17,8 @@ const modules = [
   flagsGame,
   closestGame,
   wagerGame,
+  anagramGame,
+  zoomGame,
 ] as unknown as GameModule[]
 
 export const GAMES: Record<string, GameModule> = Object.fromEntries(

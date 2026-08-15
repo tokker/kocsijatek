@@ -64,11 +64,29 @@ describe.each(games.map((game) => [game.id, game] as const))('game contract: %s'
     ).not.toThrow()
   })
 
-  it('does not leak the answer into the DOM before the player commits', () => {
+  it('does not mark which option is correct before the player commits', () => {
     const items = game.buildItems(createRng('seed'))
     render(<game.Component items={items} durationSec={900} onComplete={vi.fn()} />)
-    // Csalásvédelem: a telefon forrásából sem szabad kiolvashatónak lennie.
-    expect(document.body.innerHTML).not.toMatch(/correct|answer|solution|difficulty|bg-green/i)
+
+    // A helyes válasz SZÖVEGE jogosan látszik — az egyik gomb felirata az.
+    // Amit tilos: bármi, ami megkülönbözteti a jót a rossztól. Ilyen
+    // szivárgás osztálynévben vagy data- attribútumban jelenne meg,
+    // ezért pontosan oda nézünk, és nem a teljes forrásba.
+    const leaky = /^(correct|incorrect|answer|solution|difficulty|right|wrong)$/i
+    const revealStyling = /^(bg-green|bg-red)/
+
+    for (const element of document.querySelectorAll<HTMLElement>('*')) {
+      for (const token of element.classList) {
+        expect(token, `${id} styles an option as revealed too early`).not.toMatch(revealStyling)
+        expect(token, `${id} leaks the answer in a class name`).not.toMatch(leaky)
+      }
+      for (const attribute of element.attributes) {
+        if (!attribute.name.startsWith('data-')) continue
+        expect(attribute.name, `${id} leaks the answer in a data attribute`).not.toMatch(
+          /correct|answer|solution|difficulty/i,
+        )
+      }
+    }
   })
 
   it('always finishes when the round clock runs out', () => {

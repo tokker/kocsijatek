@@ -59,9 +59,29 @@ function NordicCross({ field, cross, inner }: { field: string; cross: string; in
   )
 }
 
-export function FlagSvg({ spec, className }: { spec: FlagSpec; className?: string }) {
+/** Kivágás a zászló saját koordinátarendszerében (90 × 60, a svájcinál 60 × 60). */
+export interface FlagCrop {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+export const FLAG_W = W
+export const FLAG_H = H
+
+export function FlagSvg({
+  spec,
+  className,
+  crop,
+}: {
+  spec: FlagSpec
+  className?: string
+  crop?: FlagCrop
+}) {
   const square = spec.kind === 'swissCross'
-  const viewBox = square ? `0 0 ${H} ${H}` : `0 0 ${W} ${H}`
+  const full = square ? `0 0 ${H} ${H}` : `0 0 ${W} ${H}`
+  const viewBox = crop ? `${crop.x} ${crop.y} ${crop.w} ${crop.h}` : full
 
   return (
     <svg
@@ -100,16 +120,19 @@ export function FlagSvg({ spec, className }: { spec: FlagSpec; className?: strin
         </>
       )}
 
-      {/* Vékony keret, hogy a fehér mezős zászlók is elváljanak a háttértől. */}
-      <rect
-        x={0}
-        y={0}
-        width={square ? H : W}
-        height={H}
-        fill="none"
-        stroke="rgba(148,163,184,0.5)"
-        strokeWidth={1}
-      />
+      {/* Vékony keret, hogy a fehér mezős zászlók is elváljanak a háttértől.
+          Kivágásnál elmarad: ott a keret elárulná, hol jár a zoom. */}
+      {!crop && (
+        <rect
+          x={0}
+          y={0}
+          width={square ? H : W}
+          height={H}
+          fill="none"
+          stroke="rgba(148,163,184,0.5)"
+          strokeWidth={1}
+        />
+      )}
     </svg>
   )
 }
