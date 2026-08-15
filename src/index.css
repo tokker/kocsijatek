@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --color-car-1: #ef4444;
+  --color-car-2: #3b82f6;
+  --color-car-3: #22c55e;
+  --color-car-4: #eab308;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #0f172a;
+  color: #f1f5f9;
+  /* Rázkódó autóban a véletlen szövegkijelölés folyamatosan zavarna. */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Megakadályozza a "pull to refresh" mozdulatot játék közben. */
+  overscroll-behavior: none;
+}
+
+/* Kiveszi a dupla koppintásra váró 300 ms-os késleltetést, de a
+   csippentéses nagyítást meghagyja azoknak, akiknek szükségük van rá. */
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
